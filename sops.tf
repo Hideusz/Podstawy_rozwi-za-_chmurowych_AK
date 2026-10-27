@@ -21,15 +21,15 @@ resource "azurerm_key_vault_key" "sops_encryption_key" {
 # Data source do odczytu zaszyfrowanych sekretów z SOPS
 # Uwaga: Plik secrets.yaml musi istnieć, nawet jeśli jest pusty
 # sops.tf - data source do odczytu zaszyfrowanych sekretów
-/*data "sops_file" "secrets" {
-  source_file = "secrets.yaml"
-
+data "sops_file" "secrets" {
+  source_file = "secrets.enc.yaml"
+  input_type  = "yaml"
   depends_on = [
     azurerm_key_vault_key.sops_encryption_key,
     azurerm_role_assignment.sops_crypto_user,
     azurerm_role_assignment.key_vault_secrets_officer
   ]
-}*/
+}
 
 # Mapowanie nazw sekretów z SOPS na nazwy w Key Vault
 # sops.tf - mapowanie nazw sekretów z SOPS na nazwy w Key Vault
@@ -37,8 +37,10 @@ locals {
   # Statyczne mapowanie - klucze znane podczas planowania
   sops_to_keyvault_mapping = {
     # Odkomentuj gdy masz zaszyfrowany plik secrets.yaml:
-    #"devops-sp-username" = try(data.sops_file.secrets.data["devops_sp_username"], "")
-    #"devops-sp-password" = try(data.sops_file.secrets.data["devops_sp_password"], "")
+    "devops-sp-username" = try(data.sops_file.secrets.data["devops_sp_username"], "")
+    "devops-sp-password" = try(data.sops_file.secrets.data["devops_sp_password"], "")
+    "database-password" = try(data.sops_file.secrets.data["database_password"], "")
+    "api-key" = try(data.sops_file.secrets.data["api_key"], "")
   }
 }
 

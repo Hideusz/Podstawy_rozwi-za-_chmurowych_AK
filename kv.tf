@@ -16,3 +16,13 @@ resource "azurerm_key_vault" "this" {
 
   lifecycle { prevent_destroy = true }
 }
+resource "azurerm_key_vault_key" "sops_encryption" {
+name = "sops-encryption-key"
+key_vault_id = azurerm_key_vault.this.id
+ key_type = "RSA"
+ key_size = 2048
+ key_opts = ["decrypt", "encrypt"]
+
+ tags = local.project_tags
+ lifecycle { prevent_destroy = true }
+}

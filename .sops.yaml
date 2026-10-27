@@ -1,0 +1,3 @@
+creation_rules:
+  - path_regex: .*
+    azure_kv: "https://kv-main26-g14k02n152487.vault.azure.net/keys/sops-encryption-key/47a21d597c4041a697f26a9f4f45221c"
